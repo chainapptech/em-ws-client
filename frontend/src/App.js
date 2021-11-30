@@ -10,9 +10,9 @@ const App = () => {
   const [stockOrders, setStockOrders] = useState({})
   const [commoditiesOrders, setCommoditiesOrders] = useState({})
   const [activeTab, setActiveTab] = useState("exclusive-tab1");
-  const [activePair, setActivePair] = useState("EURUSD");
+  const [activePair, setActivePair] = useState("");
 
-  const [isPaused, setPause] = useState(false);
+  //const [isPaused, setPause] = useState(false);
   const ws = useRef(null);
 
   useEffect(() => {
@@ -55,7 +55,7 @@ const App = () => {
       //   }
       // }, 2000);
 
-      if (isPaused) return;
+      //if (isPaused) return;
       const response = JSON.parse(event.data);
       const { Symbol, Quotes, Group } = response;
 
@@ -81,44 +81,61 @@ const App = () => {
 
 
     };
-  }, [forexOrders, commoditiesOrders, indicesOrders, cryptoOrders, stockOrders, isPaused]);
+  }, [forexOrders, commoditiesOrders, indicesOrders, cryptoOrders, stockOrders]);
 
   const Quotes = (props) => {
 
     const addDepthClass = (index, pk) => {
-      if (index === 0) {
-        return "depth-show";
-      } else if (activePair === pk) {
+      if (activePair === pk) {
         return "depth-show active";
-      } else {
+      }
+      else if (index === 0) {
+        return "depth-show";
+      }  else {
         return "depth-hide";
       }
     }
 
-    const handleDepth = (pk) => {
+    /*const handleDepth = (pk) => {
+      //console.log('Click');
       setPause(true);
       setActivePair(pk);
-      console.log(activePair);
 
       const elements = [...document.getElementsByClassName(pk)];
 
       elements.forEach((element) => {
         if (element.classList.contains("active")) {
-          //element.classList.remove("active")
+          element.classList.remove("active")
         } else {
           element.classList.add("active")
         }
 
         element.classList.toggle("depth-hide");
       })
-    };
+    };*/
 
-    const handlePause = () => {
-      setPause(true);
+    //const handlePause = () => {
+      //setPause(true);
 
-      setInterval(() => {
-        setPause(false);
-      }, 5000);
+      //setInterval(() => {
+      //  setPause(false);
+      //}, 5000);
+    //}
+
+    const onMouseDownTest = (pk) => {
+      //setPause(true);
+      setActivePair(pk);
+
+      const elements = [...document.getElementsByClassName(pk)];
+
+      elements.forEach((element) => {
+        if (element.classList.contains("active")) {
+          setActivePair('');
+        } else {
+          element.classList.add("active")
+        }
+        //element.classList.toggle("depth-hide");
+      })
     }
 
     return (
@@ -128,8 +145,8 @@ const App = () => {
             <tr
               key={props.pairKey + index}
               className={`${props.pairKey} ${addDepthClass(index, props.pairKey)}`}
-              onClick={() => handleDepth(props.pairKey)}
-              onMouseEnter={() => handlePause()}
+              onMouseDown={() =>  onMouseDownTest(props.pairKey) }
+              //onMouseEnter={() => handlePause()}
             //onMouseLeave={() => setPause(false)}
             >
               <td className="pair"><strong>{props.pairKey}</strong></td>
@@ -165,7 +182,7 @@ const App = () => {
   const QuotesTable = (props) => {
     return (
       <table cellSpacing="0" cellPadding="0">
-        <tbody>
+        <tbody className='tbody'>
           {
             Object.keys(props.GroupOrders).map((pairKey) => {
               const quotes = props.GroupOrders[pairKey];
@@ -191,7 +208,7 @@ const App = () => {
   }
 
   return (
-    <div className="exclusive-tabs" onClick={() => setPause(!isPaused)}>
+    <div className="exclusive-tabs">
       {/* Tab nav */}
       <ul className="nav">
         <li className={activeTab === "exclusive-tab1" ? "active" : ""} onClick={() => setActiveTab("exclusive-tab1")}>{activeTab === "exclusive-tab1" ? <i className="ex-arrow ex-down"></i> : <i className="ex-arrow ex-right"></i>} Forex</li>
@@ -207,10 +224,6 @@ const App = () => {
         {activeTab === "exclusive-tab4" ? <QuotesTable GroupOrders={stockOrders} /> : ""}
         {activeTab === "exclusive-tab5" ? <QuotesTable GroupOrders={cryptoOrders} /> : ""}
       </div>
-
-      <button onClick={() => setPause(!isPaused)}>
-        {isPaused ? "Resume" : "Pause"}
-      </button>
     </div>
 
   )
