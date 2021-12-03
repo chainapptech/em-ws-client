@@ -32,8 +32,24 @@ tr {
 tfoot th {
   color: #00a7e0 !important;
 }
+
+.tbody > .active {
+  background-color: black;
+}
+
+.tbody > .active > td.pair {
+  padding-left: 7px;
+}
+
+.tbody > .active ~ .active > td.pair {
+  padding-left: 17px;
+}
+
+.tbody > .active ~ .active {
+  background-color: #323232;
+}
+
 tr.depth-show.active {
-  background-color: #111111;
   color: #fff;
 }
 tr.active {
@@ -41,10 +57,10 @@ tr.active {
   color: #fff;
 }
 tr.active td.pair {
-  padding-left: 20px;
+  /*padding-left: 20px;*/
 }
 tr.depth-show.active td.pair {
-  padding-left: 10px;
+  /*padding-left: 12px;*/
 }
 .ex-arrow {
   border: solid #111111;
